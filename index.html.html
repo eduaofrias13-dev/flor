@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Un ramo para ti 💛</title>
+    <style>
+        :root {
+            --amarillo-claro: #fff9c4;
+            --amarillo: #ffe45c;
+            --amarillo-medio: #ffd21c;
+            --amarillo-oscuro: #f4a900;
+            --verde: #2d7a3e;
+            --verde-claro: #55b85d;
+            --verde-oscuro: #124d25;
+            --noche-1: #030c1a;
+            --noche-2: #0a1f38;
+            --noche-3: #0f2a44;
+            --noche-4: #14354d;
+            --transicion: cubic-bezier(.17, .67, .3, 1.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            min-height: 100%;
+        }
+
+        body {
+            min-height: 100vh;
+            overflow-x: hidden;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background:
+                radial-gradient(
+                    circle at top center,
+                    var(--noche-3) 0%,
+                    var(--noche-2) 40%,
+                    var(--noche-1) 100%
+                );
+        }
+
+        /* =====================================================
+           ESCENA
+        ===================================================== */
+        .escena {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* =====================================================
+           LUNA REALISTA
+        ===================================================== */
+        .luna {
+            position: absolute;
+            top: 50px;
+            right: 8%;
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background:
+                radial-gradient(
+                    circle at 32% 22%,
+                    #ffffff 0%,
+                    #fefce8 15%,
+                    #fef9d0 30%,
+                    #fdf4b8 50%,
+                    #f9eb9c 70%,
+                    #f2dd7e 85%,
+                    #e8c86a 100%
+                );
+            box-shadow:
+                0 0 40px rgba(255, 245, 180, 0.6),
+                0 0 90px rgba(255, 230, 120, 0.35),
+                0 0 140px rgba(255, 210, 60, 0.15),
+                inset -15px -10px 25px rgba(200, 160, 80, 0.25);
+            animation: brilloLuna 6s ease-in-out infinite alternate;
+            z-index: 1;
+        }
+
+        /* Cráteres para dar realismo */
+        .luna::before,
+        .luna::after,
+        .luna .craters {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background:
+                radial-gradient(circle at 25% 30%, rgba(200, 170, 100, 0.12) 2px, transparent 4px),
+                radial-gradient(circle at 55% 20%, rgba(180, 150, 90, 0.10) 3px, transparent 6px),
+                radial-gradient(circle at 70% 45%, rgba(210, 180, 110, 0.11) 2px, transparent 5px),
+                radial-gradient(circle at 35% 65%, rgba(190, 160, 95, 0.09) 3px, transparent 7px),
+                radial-gradient(circle at 60% 70%, rgba(200, 170, 100, 0.10) 2px, transparent 4px),
+                radial-gradient(circle at 20% 55%, rgba(170, 140, 85, 0.08) 1.5px, transparent 3.5px),
+                radial-gradient(circle at 75% 28%, rgba(185, 155, 92, 0.09) 2px, transparent 4px),
+                radial-gradient(circle at 45% 80%, rgba(195, 165, 98, 0.08) 2.5px, transparent 5px);
+            opacity: 0.9;
+            pointer-events: none;
+        }
+
+        @keyframes brilloLuna {
+            from {
+                transform: scale(1);
+                filter: brightness(0.92) drop-shadow(0 0 30px rgba(255, 245, 180, 0.4));
+            }
+            to {
+                transform: scale(1.04);
+                filter: brightness(1.08) drop-shadow(0 0 50px rgba(255, 245, 180, 0.6));
+            }
+        }
+
+        /* =====================================================
+           ESTRELLAS
+        ===================================================== */
+        .estrella {
+            position: absolute;
+            border-radius: 50%;
+            background: white;
+            box-shadow: 0 0 6px rgba(255,255,255,0.9);
+            animation: parpadear 3.5s ease-in-out infinite alternate;
+            z-index: 1;
+        }
+
+        @keyframes parpadear {
+            0% {
+                opacity: 0.1;
+                transform: scale(0.5);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1.3);
+            }
+        }
+
+        /* =====================================================
+           CONTENIDO
+        ===================================================== */
+        .contenido {
+            position: relative;
+            width: min(100%, 900px);
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px 110px;
+            z-index: 10;
+        }
+
+        /* =====================================================
+           RAMO
+        ===================================================== */
+        .ramo {
+            position: relative;
+            width: min(540px, 82vw);
+            height: min(470px, 55vh);
+            min-height: 360px;
+            flex-shrink: 0;
+        }
+
+        /* =====================================================
+           FLORES
+        ===================================================== */
+        .flor {
+            position: absolute;
+            bottom: 90px;
+            left: var(--posicion);
+            width: 100px;
+            height: 330px;
+            margin-left: -50px;
+            transform-origin: bottom center;
+            opacity: 0;
+            transform:
+                translateY(300px)
+                rotate(var(--rotacion))
+                scale(0.35);
+            transition:
+                transform 1.3s var(--transicion),
+                opacity 0.8s ease;
+            will-change: transform, opacity;
+        }
+
+        .flor.visible {
+            opacity: 1;
+            transform:
+                translateY(0)
+                rotate(var(--rotacion))
+                scale(var(--escala));
+        }
+
+        .flor.balanceando {
+            animation: balanceo 5s ease-in-out infinite;
+            animation-delay: var(--delay);
+        }
+
+        @keyframes balanceo {
+            0%, 100% {
+                transform:
+                    translateY(0)
+                    rotate(calc(var(--rotacion) + 1.3deg))
+                    scale(var(--escala));
+            }
+            50% {
+                transform:
+                    translateY(-7px)
+                    rotate(calc(var(--rotacion) - 1.3deg))
+                    scale(var(--escala));
+            }
+        }
+
+        /* =====================================================
+           MARGARITA
+        ===================================================== */
+        .margarita {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100px;
+            height: 100px;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.22));
+        }
+
+        /* =====================================================
+           PÉTALOS
+        ===================================================== */
+        .petalo {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 23px;
+            height: 50px;
+            margin-left: -11.5px;
+            margin-top: -50px;
+            transform-origin: 50% 100%;
+            border-radius: 55% 55% 45% 45%;
+            background:
+                linear-gradient(
+                    to bottom,
+                    var(--amarillo-claro),
+                    var(--amarillo),
+                    var(--amarillo-medio),
+                    var(--amarillo-oscuro)
+                );
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+        }
+
+        .petalo:nth-child(1)  { transform: rotate(0deg); }
+        .petalo:nth-child(2)  { transform: rotate(30deg); }
+        .petalo:nth-child(3)  { transform: rotate(60deg); }
+        .petalo:nth-child(4)  { transform: rotate(90deg); }
+        .petalo:nth-child(5)  { transform: rotate(120deg); }
+        .petalo:nth-child(6)  { transform: rotate(150deg); }
+        .petalo:nth-child(7)  { transform: rotate(180deg); }
+        .petalo:nth-child(8)  { transform: rotate(210deg); }
+        .petalo:nth-child(9)  { transform: rotate(240deg); }
+        .petalo:nth-child(10) { transform: rotate(270deg); }
+        .petalo:nth-child(11) { transform: rotate(300deg); }
+        .petalo:nth-child(12) { transform: rotate(330deg); }
+
+        /* =====================================================
+           CENTRO
+        ===================================================== */
+        .centro-flor {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 36px;
+            height: 36px;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            background:
+                radial-gradient(
+                    circle at 35% 30%,
+                    #fff176,
+                    var(--amarillo-medio) 45%,
+                    var(--amarillo-oscuro) 80%
+                );
+            box-shadow:
+                0 0 8px var(--amarillo),
+                0 0 16px rgba(255,210,28,0.4);
+            z-index: 5;
+            animation: centroBrillo 2.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes centroBrillo {
+            from { filter: brightness(0.95); }
+            to   { filter: brightness(1.18); }
+        }
+
+        .centro-flor::before {
+            content: "";
+            position: absolute;
+            inset: 6px;
+            border-radius: 50%;
+            background:
+                radial-gradient(
+                    circle,
+                    var(--amarillo-oscuro) 1px,
+                    transparent 2px
+                );
+            background-size: 6px 6px;
+            opacity: 0.7;
+        }
+
+        /* =====================================================
+           TALLO
+        ===================================================== */
+        .tallo {
+            position: absolute;
+            bottom: 0;
+            left: 47px;
+            width: 7px;
+            height: 245px;
+            border-radius: 10px;
+            background:
+                linear-gradient(
+                    to right,
+                    var(--verde-oscuro),
+                    #3cb04a,
+                    var(--verde),
+                    var(--verde-oscuro)
+                );
+        }
+
+        /* =====================================================
+           HOJAS
+        ===================================================== */
+        .hoja {
+            position: absolute;
+            width: 75px;
+            height: 27px;
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--verde-claro),
+                    var(--verde),
+                    var(--verde-oscuro)
+                );
+            border-radius: 100% 0 100% 0;
+        }
+
+        .hoja.izquierda {
+            bottom: 65px;
+            left: -10px;
+            transform: rotate(-35deg);
+        }
+
+        .hoja.derecha {
+            bottom: 115px;
+            right: -10px;
+            transform: scaleX(-1) rotate(-35deg);
+        }
+
+        /* =====================================================
+           ENVOLTORIO
+        ===================================================== */
+        .envoltorio {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 280px;
+            height: 170px;
+            transform: translateX(-50%) translateY(30px);
+            background:
+                linear-gradient(
+                    145deg,
+                    #fffdf1,
+                    #f8f0d8,
+                    #dfd0a4
+                );
+            clip-path: polygon(8% 0, 92% 0, 100% 100%, 0 100%);
+            opacity: 0;
+            transition:
+                opacity 1s ease,
+                transform 1s var(--transicion);
+            z-index: 10;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.12);
+        }
+
+        .envoltorio.visible {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* =====================================================
+           LISTÓN
+        ===================================================== */
+        .liston {
+            position: absolute;
+            bottom: 105px;
+            left: 50%;
+            width: 70px;
+            height: 29px;
+            transform: translateX(-50%) scale(0.8);
+            border-radius: 10px;
+            background:
+                linear-gradient(
+                    to bottom,
+                    #fff176,
+                    var(--amarillo-medio),
+                    var(--amarillo-oscuro)
+                );
+            opacity: 0;
+            transition:
+                opacity 0.8s ease,
+                transform 0.5s ease;
+            z-index: 15;
+        }
+
+        .liston.visible {
+            opacity: 1;
+            transform: translateX(-50%) scale(1.05);
+        }
+
+        .liston::before,
+        .liston::after {
+            content: "";
+            position: absolute;
+            top: 13px;
+            width: 56px;
+            height: 26px;
+            background:
+                linear-gradient(
+                    90deg,
+                    var(--amarillo-medio),
+                    var(--amarillo-oscuro)
+                );
+            border-radius: 4px;
+        }
+
+        .liston::before {
+            right: 40px;
+            transform: rotate(28deg);
+        }
+
+        .liston::after {
+            left: 40px;
+            transform: rotate(-28deg);
+        }
+
+        /* =====================================================
+           MENSAJE
+        ===================================================== */
+        .mensaje {
+            width: min(90%, 650px);
+            padding: 18px 24px;
+            text-align: center;
+            color: white;
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(15,28,42,0.84),
+                    rgba(20,55,45,0.72)
+                );
+            border: 1px solid rgba(255,225,100,0.3);
+            border-radius: 22px;
+            box-shadow:
+                0 10px 35px rgba(0,0,0,0.3),
+                0 0 25px rgba(255,210,28,0.12);
+            backdrop-filter: blur(8px);
+            opacity: 0;
+            transform: translateY(25px) scale(0.95);
+            transition:
+                opacity 1s ease,
+                transform 1s var(--transicion);
+            z-index: 30;
+        }
+
+        .mensaje.visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .mensaje-principal {
+            color: var(--amarillo);
+            font-size: clamp(20px, 3vw, 27px);
+            font-weight: bold;
+            margin-bottom: 8px;
+            text-shadow: 0 0 12px rgba(255,210,28,0.5);
+        }
+
+        .mensaje-secundario {
+            font-size: clamp(14px, 2vw, 18px);
+            line-height: 1.5;
+            color: rgba(255,255,255,0.95);
+        }
+
+        .mensaje-final {
+            margin-top: 10px;
+            font-size: clamp(13px, 1.8vw, 16px);
+            color: rgba(255,255,255,0.72);
+            font-style: italic;
+        }
+
+        /* =====================================================
+           BOTÓN
+        ===================================================== */
+        .boton {
+            position: absolute;
+            left: 50%;
+            bottom: 28px;
+            transform: translateX(-50%);
+            padding: 14px 30px;
+            border: none;
+            border-radius: 50px;
+            background:
+                linear-gradient(
+                    135deg,
+                    #fff176,
+                    #ffd21c,
+                    #f4a900
+                );
+            color: #4c3900;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(255,179,0,0.35);
+            transition:
+                transform 0.3s ease,
+                box-shadow 0.3s ease;
+            z-index: 100;
+        }
+
+        .boton:hover {
+            transform: translateX(-50%) translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 30px rgba(255,179,0,0.55);
+        }
+
+        .boton:active {
+            transform: translateX(-50%) scale(0.95);
+        }
+
+        /* =====================================================
+           SUELO
+        ===================================================== */
+        .suelo {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 45px;
+            background:
+                linear-gradient(
+                    to bottom,
+                    var(--verde),
+                    var(--verde-oscuro),
+                    #082314
+                );
+            z-index: 5;
+        }
+
+        /* =====================================================
+           PÉTALOS QUE CAEN
+        ===================================================== */
+        .petalo-caida {
+            position: absolute;
+            top: -30px;
+            width: 14px;
+            height: 20px;
+            border-radius: 70% 30% 70% 30%;
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--amarillo-claro),
+                    var(--amarillo-medio),
+                    var(--amarillo-oscuro)
+                );
+            animation: caer var(--duracion) ease-in-out forwards;
+            z-index: 80;
+        }
+
+        @keyframes caer {
+            0% {
+                transform: translateY(-30px) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            100% {
+                transform:
+                    translateY(110vh)
+                    translateX(var(--movimiento))
+                    rotate(calc(720deg * var(--giro)));
+                opacity: 0;
+            }
+        }
+
+        /* =====================================================
+           TABLET
+        ===================================================== */
+        @media (max-width: 800px) {
+            .luna {
+                width: 85px;
+                height: 85px;
+                top: 55px;
+                right: 5%;
+            }
+            .contenido { padding: 10px 15px 105px; }
+            .ramo {
+                width: min(480px, 85vw);
+                height: 430px;
+            }
+        }
+
+        /* =====================================================
+           MÓVIL
+        ===================================================== */
+        @media (max-width: 600px) {
+            .escena { min-height: 680px; }
+            .luna {
+                width: 70px;
+                height: 70px;
+                top: 45px;
+            }
+            .contenido {
+                width: 100%;
+                padding: 5px 10px 100px;
+            }
+            .ramo {
+                width: 360px;
+                height: 380px;
+                max-width: 92vw;
+                min-height: 350px;
+            }
+            .flor {
+                width: 82px;
+                height: 285px;
+                margin-left: -41px;
+            }
+            .margarita {
+                width: 82px;
+                height: 82px;
+            }
+            .petalo {
+                width: 19px;
+                height: 42px;
+                margin-left: -9.5px;
+                margin-top: -42px;
+            }
+            .centro-flor {
+                width: 30px;
+                height: 30px;
+            }
+            .tallo {
+                left: 38px;
+                height: 210px;
+            }
+            .hoja {
+                width: 65px;
+                height: 24px;
+            }
+            .envoltorio {
+                width: 245px;
+                height: 145px;
+            }
+            .liston { bottom: 90px; }
+            .mensaje {
+                width: 94%;
+                padding: 15px 17px;
+                border-radius: 18px;
+            }
+            .mensaje-principal { font-size: 20px; }
+            .mensaje-secundario { font-size: 14px; }
+            .mensaje-final { font-size: 13px; }
+            .boton {
+                bottom: 17px;
+                padding: 13px 25px;
+                font-size: 15px;
+            }
+            .suelo { height: 38px; }
+        }
+
+        /* =====================================================
+           MÓVILES PEQUEÑOS
+        ===================================================== */
+        @media (max-width: 400px) {
+            .escena { min-height: 650px; }
+            .luna {
+                width: 60px;
+                height: 60px;
+            }
+            .ramo {
+                width: 330px;
+                height: 345px;
+                min-height: 330px;
+            }
+            .flor {
+                transform:
+                    translateY(280px)
+                    rotate(var(--rotacion))
+                    scale(0.3);
+            }
+            .flor.visible {
+                transform:
+                    translateY(0)
+                    rotate(var(--rotacion))
+                    scale(0.72);
+            }
+            .mensaje { padding: 13px 14px; }
+            .mensaje-principal { font-size: 18px; }
+            .mensaje-secundario { font-size: 13px; }
+            .mensaje-final { font-size: 12px; }
+            .boton {
+                padding: 12px 22px;
+                font-size: 14px;
+            }
+        }
+
+        /* =====================================================
+           ACCESIBILIDAD
+        ===================================================== */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="escena">
+        <!-- LUNA REALISTA -->
+        <div class="luna">
+            <div class="craters"></div>
+        </div>
+
+        <!-- CONTENIDO PRINCIPAL -->
+        <main class="contenido">
+            <!-- RAMO -->
+            <div class="ramo" id="ramo">
+                <div class="envoltorio" id="envoltorio"></div>
+                <div class="liston" id="liston"></div>
+            </div>
+
+            <!-- MENSAJE -->
+            <div class="mensaje" id="mensaje">
+                <div class="mensaje-principal">
+                    ❤️🌼 Estas flores son para ti 🌼❤️
+                </div>
+                <div class="mensaje-secundario">
+                    No pude regalarte flores físicas,
+                    pero sí unas de manera digital que no se van a marchitar nunca.
+                    Espero de corazón que te gusten❤️🥺 
+                </div>
+                <div class="mensaje-final">
+                    Espero que cuando las veas recuerdes
+                    que hay alguien que piensa en ti 
+                    mi lindaa❤️✨
+                </div>
+            </div>
+        </main>
+
+        <!-- BOTÓN -->
+        <button class="boton" id="crearRamo" type="button">
+            ❤️ Tengo algo para ti
+        </button>
+
+        <!-- SUELO -->
+        <div class="suelo"></div>
+    </div>
+
+    <script>
+        const ramo = document.getElementById("ramo");
+        const boton = document.getElementById("crearRamo");
+        const mensaje = document.getElementById("mensaje");
+        const envoltorio = document.getElementById("envoltorio");
+        const liston = document.getElementById("liston");
+        let animando = false;
+
+        /* ESTRELLAS */
+        function crearEstrellas() {
+            const escena = document.querySelector(".escena");
+            escena.querySelectorAll(".estrella").forEach(e => e.remove());
+            for (let i = 0; i < 100; i++) {
+                const estrella = document.createElement("div");
+                estrella.className = "estrella";
+                const tamano = Math.random() * 2 + 0.8;
+                estrella.style.width = estrella.style.height = `${tamano}px`;
+                estrella.style.left = `${Math.random() * 100}%`;
+                estrella.style.top = `${Math.random() * 75}%`;
+                estrella.style.animationDelay = `${Math.random() * 3.5}s`;
+                escena.appendChild(estrella);
+            }
+        }
+
+        /* CREAR UNA FLOR */
+        function crearFlor(datos) {
+            const flor = document.createElement("div");
+            flor.className = "flor";
+            flor.style.setProperty("--posicion", `${datos.posicion}%`);
+            flor.style.setProperty("--rotacion", `${datos.rotacion}deg`);
+            flor.style.setProperty("--escala", datos.escala);
+            flor.style.setProperty("--delay", `${datos.balanceo}s`);
+
+            const petalos = Array(12).fill('<div class="petalo"></div>').join("");
+            flor.innerHTML = `
+                <div class="margarita">
+                    ${petalos}
+                    <div class="centro-flor"></div>
+                </div>
+                <div class="tallo"></div>
+                <div class="hoja izquierda"></div>
+                <div class="hoja derecha"></div>
+            `;
+
+            ramo.appendChild(flor);
+            setTimeout(() => flor.classList.add("visible"), datos.retraso);
+            setTimeout(() => flor.classList.add("balanceando"), datos.retraso + 1300);
+        }
+
+        /* CREAR RAMO */
+        function crearRamo() {
+            if (animando) return;
+            animando = true;
+
+            mensaje.classList.remove("visible");
+            envoltorio.classList.remove("visible");
+            liston.classList.remove("visible");
+            ramo.querySelectorAll(".flor").forEach(f => f.remove());
+
+            const flores = [
+                { posicion: 50, rotacion: 0, escala: 1.08, retraso: 150, balanceo: 0 },
+                { posicion: 41, rotacion: -9, escala: 1, retraso: 350, balanceo: 0.3 },
+                { posicion: 59, rotacion: 9, escala: 1, retraso: 500, balanceo: 0.6 },
+                { posicion: 32, rotacion: -17, escala: 0.91, retraso: 700, balanceo: 0.9 },
+                { posicion: 68, rotacion: 17, escala: 0.91, retraso: 850, balanceo: 1.2 },
+                { posicion: 45, rotacion: -5, escala: 0.96, retraso: 1050, balanceo: 1.5 },
+                { posicion: 55, rotacion: 5, escala: 0.96, retraso: 1200, balanceo: 1.8 },
+                { posicion: 37, rotacion: -13, escala: 0.85, retraso: 1400, balanceo: 2.1 },
+                { posicion: 63, rotacion: 13, escala: 0.85, retraso: 1550, balanceo: 2.4 },
+                { posicion: 26, rotacion: -22, escala: 0.75, retraso: 1750, balanceo: 2.7 },
+                { posicion: 74, rotacion: 22, escala: 0.75, retraso: 1900, balanceo: 3 }
+            ];
+
+            flores.forEach(crearFlor);
+
+            setTimeout(() => {
+                envoltorio.classList.add("visible");
+                liston.classList.add("visible");
+            }, 2300);
+
+            setTimeout(() => {
+                mensaje.classList.add("visible");
+                crearPetalos();
+                animando = false;
+            }, 3000);
+        }
+
+        /* PÉTALOS QUE CAEN */
+        function crearPetalos() {
+            const escena = document.querySelector(".escena");
+            for (let i = 0; i < 24; i++) {
+                const petalo = document.createElement("div");
+                petalo.className = "petalo-caida";
+                petalo.style.setProperty("--movimiento", `${Math.random() * 240 - 120}px`);
+                petalo.style.setProperty("--giro", 0.5 + Math.random());
+                petalo.style.setProperty("--duracion", `${5 + Math.random() * 4}s`);
+                petalo.style.left = `${Math.random() * 100}%`;
+                petalo.style.animationDelay = `${Math.random() * 2}s`;
+                escena.appendChild(petalo);
+                setTimeout(() => petalo.remove(), 11000);
+            }
+        }
+
+        /* INICIALIZAR */
+        crearEstrellas();
+        boton.addEventListener("click", crearRamo);
+    </script>
+</body>
+</html>
